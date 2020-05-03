@@ -10,7 +10,9 @@
 	#include <Arduino.h>
 #endif
 
-#include <Stream.h>
+#ifdef ARDUINO
+	#include <Stream.h>
+#endif
 #include <SPI.h>
 
 #if (__cplusplus == 201703L) && defined(__has_include)

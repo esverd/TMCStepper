@@ -7,3 +7,5 @@ examples/TMCStepper_CubeMX/Drivers
 examples/RemoteSystemsTempFiles/
 *.ld
 *.s
+
+examples/TMCStepper_CubeMX/
