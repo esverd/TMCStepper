@@ -8,4 +8,4 @@ examples/RemoteSystemsTempFiles/
 *.ld
 *.s
 
-examples/TMCStepper_CubeMX/
+#examples/TMCStepper_CubeMX/

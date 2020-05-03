@@ -241,14 +241,13 @@ namespace TMCStepper_n {
 			return (p2.port == this->port) && (p2.pin == this->pin);
 		}
 
-	protected:
 		GPIO_TypeDef* const port = nullptr;
 		uint32_t const pin;
 	};
 
 	class TMCPin {
 	public:
-		TMCPin(PinDef &p) : pin(p) {}
+		TMCPin(const PinDef &p) : pin(p) {}
 
 		#if defined(HAL_GPIO_MODULE_ENABLED)
 			void mode(const uint8_t mode) const {
@@ -280,36 +279,41 @@ namespace TMCStepper_n {
 			void mode(const uint8_t mode) const {
 				switch(mode) {
 					case OUTPUT:
-						LL_GPIO_SetPinMode(port, pin, LL_GPIO_MODE_OUTPUT);
+						LL_GPIO_SetPinMode(pin.port, pin.pin, LL_GPIO_MODE_OUTPUT);
 						break;
 					case INPUT:
-						LL_GPIO_SetPinMode(port, pin, LL_GPIO_MODE_INPUT);
+						LL_GPIO_SetPinMode(pin.port, pin.pin, LL_GPIO_MODE_INPUT);
 						break;
 					default: break;
 				}
 			}
 
 			bool read() const {
-				return LL_GPIO_ReadOutputPort(port) & pin;
+				return LL_GPIO_ReadInputPort(pin.port) & pin.pin;
 			}
 
 			void write(const bool state) const {
 				if (state)
-					LL_GPIO_SetOutputPin(port, pin);
+					LL_GPIO_SetOutputPin(pin.port, pin.pin);
 				else
-					LL_GPIO_ResetOutputPin(port, pin);
+					LL_GPIO_ResetOutputPin(pin.port, pin.pin);
 			}
+
 		#endif
 
 		operator bool() const {
 			return read();
 		}
+		void operator =(bool state) {
+			write(state);
+		}
 
 	private:
-		PinDef &pin const;
+		const PinDef &pin;
 	};
 
 	typedef TMCPin OutputPin;
+	typedef TMCPin InputPin;
 #endif
 
 }
