@@ -1,12 +1,14 @@
 #include "TMCStepper.h"
 #include "TMC_MACROS.h"
 
+using namespace TMCStepper_n;
+
 int8_t TMC2130Stepper::chain_length = 0;
 uint32_t TMC2130Stepper::spi_speed = 16000000/8;
 
 TMC2130Stepper::TMC2130Stepper(uint16_t pinCS, float RS, int8_t link) :
   TMCStepper(RS),
-  _pinCS(pinCS),
+  pinCS(cs),
   link_index(link)
   {
     defaults();
@@ -17,7 +19,7 @@ TMC2130Stepper::TMC2130Stepper(uint16_t pinCS, float RS, int8_t link) :
 
 TMC2130Stepper::TMC2130Stepper(uint16_t pinCS, float RS, uint16_t pinMOSI, uint16_t pinMISO, uint16_t pinSCK, int8_t link) :
   TMCStepper(RS),
-  _pinCS(pinCS),
+  pinCS(cs),
   link_index(link)
   {
     SW_SPIClass *SW_SPI_Obj = new SW_SPIClass(pinMOSI, pinMISO, pinSCK);
@@ -43,10 +45,6 @@ void TMC2130Stepper::defaults() {
 
 void TMC2130Stepper::setSPISpeed(uint32_t speed) {
   spi_speed = speed;
-}
-
-void TMC2130Stepper::switchCSpin(bool state) {
-  digitalWrite(_pinCS, state);
 }
 
 void TMC2130Stepper::beginTransaction() {
@@ -80,9 +78,10 @@ void TMC2130Stepper::transferEmptyBytes(const uint8_t n) {
 uint32_t TMC2130Stepper::read(uint8_t addressByte) {
   uint32_t out = 0UL;
   int8_t i = 1;
+  OutputPin cs(pinCS);
 
   beginTransaction();
-  switchCSpin(LOW);
+  cs.write(LOW);
   transfer(addressByte);
   // Clear SPI
   transferEmptyBytes(4);
@@ -94,8 +93,8 @@ uint32_t TMC2130Stepper::read(uint8_t addressByte) {
     i++;
   }
 
-  switchCSpin(HIGH);
-  switchCSpin(LOW);
+  cs.write(HIGH);
+  cs.write(LOW);
 
   // Shift data from target link into the last one...
   while(i < chain_length) {
@@ -114,16 +113,17 @@ uint32_t TMC2130Stepper::read(uint8_t addressByte) {
   out |= transfer(0x00);
 
   endTransaction();
-  switchCSpin(HIGH);
+  cs.write(HIGH);
   return out;
 }
 
 void TMC2130Stepper::write(uint8_t addressByte, uint32_t config) {
+  OutputPin cs(pinCS);
   addressByte |= TMC_WRITE;
   int8_t i = 1;
 
   beginTransaction();
-  switchCSpin(LOW);
+  cs.write(LOW);
   status_response = transfer(addressByte);
   transfer(config>>24);
   transfer(config>>16);
@@ -138,13 +138,14 @@ void TMC2130Stepper::write(uint8_t addressByte, uint32_t config) {
   }
 
   endTransaction();
-  switchCSpin(HIGH);
+  cs.write(HIGH);
 }
 
 void TMC2130Stepper::begin() {
   //set pins
-  pinMode(_pinCS, OUTPUT);
-  switchCSpin(HIGH);
+  OutputPin cs(pinCS);
+  cs.mode(OUTPUT);
+  cs.write(HIGH);
 
   if (TMC_SW_SPI != nullptr) TMC_SW_SPI->init();
 

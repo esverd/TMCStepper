@@ -1,6 +1,8 @@
 #include "TMCStepper.h"
 #include "SW_SPI.h"
 
+using namespace TMCStepper_n;
+ 
 TMC2660Stepper::TMC2660Stepper(uint16_t pinCS, float RS) :
   _pinCS(pinCS),
   Rsense(RS)
@@ -18,12 +20,15 @@ void TMC2660Stepper::switchCSpin(bool state) {
   // Allows for overriding in child class to make use of fast io
   digitalWrite(_pinCS, state);
 }
+using namespace TMC2660_n;
 
 uint32_t TMC2660Stepper::read() {
   uint32_t response = 0UL;
   uint32_t dummy = ((uint32_t)DRVCONF_register.address<<17) | DRVCONF_register.sr;
+  OutputPin cs(pinCS);
+
   if (TMC_SW_SPI != nullptr) {
-    switchCSpin(LOW);
+    cs.write(LOW);
     response |= TMC_SW_SPI->transfer((dummy >> 16) & 0xFF);
     response <<= 8;
     response |= TMC_SW_SPI->transfer((dummy >>  8) & 0xFF);
@@ -31,7 +36,7 @@ uint32_t TMC2660Stepper::read() {
     response |= TMC_SW_SPI->transfer(dummy & 0xFF);
   } else {
     SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE3));
-    switchCSpin(LOW);
+    cs.write(LOW);
     response |= SPI.transfer((dummy >> 16) & 0xFF);
     response <<= 8;
     response |= SPI.transfer((dummy >>  8) & 0xFF);
@@ -39,32 +44,35 @@ uint32_t TMC2660Stepper::read() {
     response |= SPI.transfer(dummy & 0xFF);
     SPI.endTransaction();
   }
-  switchCSpin(HIGH);
+  cs.write(HIGH);
   return response >> 4;
 }
 
 void TMC2660Stepper::write(uint8_t addressByte, uint32_t config) {
   uint32_t data = (uint32_t)addressByte<<17 | config;
+  OutputPin cs(pinCS);
+
   if (TMC_SW_SPI != nullptr) {
-    switchCSpin(LOW);
+    cs.write(LOW);
     TMC_SW_SPI->transfer((data >> 16) & 0xFF);
     TMC_SW_SPI->transfer((data >>  8) & 0xFF);
     TMC_SW_SPI->transfer(data & 0xFF);
   } else {
     SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE3));
-    switchCSpin(LOW);
+    cs.write(LOW);
     SPI.transfer((data >> 16) & 0xFF);
     SPI.transfer((data >>  8) & 0xFF);
     SPI.transfer(data & 0xFF);
     SPI.endTransaction();
   }
-  switchCSpin(HIGH);
+  cs.write(HIGH);
 }
 
 void TMC2660Stepper::begin() {
   //set pins
-  pinMode(_pinCS, OUTPUT);
-  switchCSpin(HIGH);
+  OutputPin cs(pinCS);
+  cs.mode(OUTPUT);
+  cs.write(HIGH);
 
   //TODO: Push shadow registers
 

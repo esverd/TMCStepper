@@ -2,6 +2,8 @@
 #include "TMC_MACROS.h"
 #include "SERIAL_SWITCH.h"
 
+using namespace TMCStepper_n;
+
 // Protected
 // addr needed for TMC2209
 TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr) :
@@ -12,7 +14,7 @@ TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr) :
 		defaults();
 	}
 
-TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr, uint16_t mul_pin1, uint16_t mul_pin2) :
+TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr, PinDef mul_pin1, PinDef mul_pin2) :
 	TMC2208Stepper(SerialPort, RS)
 	{
 		SSwitch *SMulObj = new SSwitch(mul_pin1, mul_pin2, addr);
@@ -22,7 +24,7 @@ TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr, uint
 #if SW_CAPABLE_PLATFORM
 	// Protected
 	// addr needed for TMC2209
-	TMC2208Stepper::TMC2208Stepper(uint16_t SW_RX_pin, uint16_t SW_TX_pin, float RS, uint8_t addr) :
+	TMC2208Stepper::TMC2208Stepper(PinDef SW_RX_pin, PinDef SW_TX_pin, float RS, uint8_t addr) :
 		TMCStepper(RS),
 		RXTX_pin(SW_RX_pin == SW_TX_pin ? SW_RX_pin : 0),
 		slave_address(addr)

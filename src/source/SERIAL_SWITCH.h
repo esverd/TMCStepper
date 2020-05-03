@@ -1,14 +1,14 @@
 #pragma once
 
-#include <Arduino.h>
-#include "TMC_platforms.h"
+#include <stdint.h>
+#include "TMC_Pin.h"
 
 class SSwitch {
   public:
-    SSwitch(const uint16_t pin1, const uint16_t pin2, const uint8_t address);
+    SSwitch(const TMCStepper_n::PinDef pin1, const TMCStepper_n::PinDef pin2, const uint8_t address);
     void active();
   private:
-    const uint16_t p1;
-    const uint16_t p2;
+    TMCStepper_n::PinDef p1;
+    TMCStepper_n::PinDef p2;
     const uint8_t addr;
 };

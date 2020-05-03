@@ -1,6 +1,8 @@
 #include "TMCStepper.h"
 #include "TMC_MACROS.h"
 
+using namespace TMCStepper_n;
+
 TMC2160Stepper::TMC2160Stepper(uint16_t pinCS, float RS, int8_t link) : TMC2130Stepper(pinCS, RS, link)
   { defaults(); }
 TMC2160Stepper::TMC2160Stepper(uint16_t pinCS, float RS, uint16_t pinMOSI, uint16_t pinMISO, uint16_t pinSCK, int8_t link) :
@@ -9,8 +11,9 @@ TMC2160Stepper::TMC2160Stepper(uint16_t pinCS, float RS, uint16_t pinMOSI, uint1
 
 void TMC2160Stepper::begin() {
   //set pins
-  pinMode(_pinCS, OUTPUT);
-  switchCSpin(HIGH);
+  OutputPin cs(pinCS);
+  cs.mode(OUTPUT);
+  cs.write(HIGH);
 
   if (TMC_SW_SPI != nullptr) TMC_SW_SPI->init();
 
