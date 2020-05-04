@@ -44,9 +44,9 @@ uint8_t SW_SPIClass::transfer(uint8_t ulVal) {
   return value;
 }
 
-uint16_t SW_SPIClass::transfer16(uint16_t data) {
-  uint16_t returnVal = 0x0000;
-  returnVal |= transfer((data>>8)&0xFF) << 8;
-  returnVal |= transfer(data&0xFF) & 0xFF;
-  return returnVal;
+void SW_SPIClass::transfer(uint8_t *buf, uint8_t count) {
+  for (uint8_t i = 0; i<count; i++) {
+    *buf = transfer(*buf);
+    buf++;
+  }
 }

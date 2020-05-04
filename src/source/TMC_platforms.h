@@ -1,5 +1,11 @@
 #pragma once
 
+#if defined(ARDUINO_ARCH_AVR)
+	#include <SPI.h>
+#endif
+
+typedef SPIClass HW_SPI_TYPE;
+
 #ifndef HIGH
 	#define HIGH 1
 #endif

@@ -9,7 +9,7 @@ class SW_SPIClass {
 		void init();
 		void begin() {};
 		uint8_t transfer(uint8_t ulVal);
-		uint16_t transfer16(uint16_t data);
+		void transfer(uint8_t *buf, uint8_t count);
 		void endTransaction() {};
 	private:
 		const TMCStepper_n::PinDef mosi_pin, sck_pin, miso_pin;
