@@ -11,9 +11,11 @@ TMC2130Stepper driver(SPI, {DRV_EN_GPIO_Port, DRV_EN_Pin}, 0.5);
 SW_SPIClass SWSPI({DRV_EN_GPIO_Port, DRV_EN_Pin}, {DRV_EN_GPIO_Port, DRV_EN_Pin}, {DRV_EN_GPIO_Port, DRV_EN_Pin});
 TMC2130Stepper driver_sw(SWSPI, {DRV_EN_GPIO_Port, DRV_EN_Pin}, 0.5);
 
+TMCStepper_n::OutputPin enPin({DRV_EN_GPIO_Port, DRV_EN_Pin});
+
 extern "C"
 void initDriver() {
-	LL_GPIO_ResetOutputPin(DRV_EN_GPIO_Port, DRV_EN_Pin);		// Enable driver in hardware
+	enPin = LOW;					// Enable driver in hardware
 
 									// Enable one according to your setup
 	driver.begin();                 //  SPI: Init CS pins and possible SW SPI pins
@@ -34,9 +36,9 @@ void runMotor() {
 	// Run 5000 steps and switch direction in software
 	for (uint16_t i = 5000; i>0; i--) {
 		step = true;
-		LL_mDelay(160);
+		delay(160);
 		//step = LOW;
-		LL_mDelay(160);
+		delay(160);
 	}
 	shaft = !shaft;
 	driver.shaft(shaft);

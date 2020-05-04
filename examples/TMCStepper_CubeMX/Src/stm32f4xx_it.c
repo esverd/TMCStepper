@@ -42,9 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-#if 1
-	volatile uint32_t uwTick = 0;
-#endif
+volatile uint32_t msCount = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -184,11 +182,9 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-  #if 1
-	uwTick++;
-  #endif
+  msCount++;
   /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
+  
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
@@ -203,7 +199,7 @@ void SysTick_Handler(void)
 
 /* USER CODE BEGIN 1 */
 uint32_t millis() {
-	return uwTick;
+	return msCount;
 }
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

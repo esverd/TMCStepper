@@ -1260,6 +1260,6 @@ class TMC2660Stepper {
 		float holdMultiplier = 0.5;
 		uint32_t spi_speed = 16000000/8; // Default 2MHz
 		uint8_t _savedToff = 0;
-		SPIClass *TMC_HW_SPI = nullptr;
+		HW_SPI_TYPE *TMC_HW_SPI = nullptr;
 		SW_SPIClass *TMC_SW_SPI = nullptr;
 };
