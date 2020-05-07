@@ -1,7 +1,10 @@
 
 #include <TMCStepper.h>
 #include <source/TMC_Pin.h>
-#include "main.h"
+
+extern "C" {
+	#include "main.h"
+}
 
 TMCStepper_n::OutputPin step({DRV_STEP_GPIO_Port, DRV_STEP_Pin});
 
@@ -10,6 +13,9 @@ TMC2130Stepper driver(SPI, {DRV_EN_GPIO_Port, DRV_EN_Pin}, 0.5);
 
 SW_SPIClass SWSPI({DRV_EN_GPIO_Port, DRV_EN_Pin}, {DRV_EN_GPIO_Port, DRV_EN_Pin}, {DRV_EN_GPIO_Port, DRV_EN_Pin});
 TMC2130Stepper driver_sw(SWSPI, {DRV_EN_GPIO_Port, DRV_EN_Pin}, 0.5);
+
+HardwareSerial SerialInstance(USART2);
+TMC2209Stepper driver_serial(&SerialInstance, 0.5, 0);
 
 TMCStepper_n::OutputPin enPin({DRV_EN_GPIO_Port, DRV_EN_Pin});
 

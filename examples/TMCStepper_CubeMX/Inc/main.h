@@ -70,6 +70,9 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+void initDriver();
+void runMotor();
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
