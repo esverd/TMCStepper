@@ -6,7 +6,7 @@ using namespace TMCStepper_n;
 
 // Protected
 // addr needed for TMC2209
-TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr) :
+TMC2208Stepper::TMC2208Stepper(HardwareSerial * SerialPort, float RS, uint8_t addr) :
 	TMCStepper(RS),
 	slave_address(addr)
 	{
@@ -14,7 +14,7 @@ TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr) :
 		defaults();
 	}
 
-TMC2208Stepper::TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr, PinDef mul_pin1, PinDef mul_pin2) :
+TMC2208Stepper::TMC2208Stepper(HardwareSerial * SerialPort, float RS, uint8_t addr, PinDef mul_pin1, PinDef mul_pin2) :
 	TMC2208Stepper(SerialPort, RS)
 	{
 		SSwitch *SMulObj = new SSwitch(mul_pin1, mul_pin2, addr);

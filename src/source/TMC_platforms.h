@@ -66,8 +66,8 @@
 	#endif
 
 	#if defined(HAL_UART_MODULE_ENABLED)
-		struct Stream {
-			Stream(UART_HandleTypeDef *const handle) : huart(handle) {}
+		struct HardwareSerial {
+			HardwareSerial(UART_HandleTypeDef *const handle) : huart(handle) {}
 
 			uint8_t write(uint8_t data) {
 				uint8_t bytesWritten = 0;
@@ -89,8 +89,8 @@
 			UART_HandleTypeDef * const huart;
 		};
 	#elif defined(USE_FULL_LL_DRIVER)
-		struct Stream {
-			Stream(USART_TypeDef *const handle) : huart(handle) {}
+		struct HardwareSerial {
+			HardwareSerial(USART_TypeDef *const handle) : huart(handle) {}
 
 			uint8_t write(uint8_t data) {
 				LL_USART_TransmitData8(huart, data);

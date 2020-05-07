@@ -11,7 +11,7 @@
 #endif
 
 #ifdef ARDUINO
-	#include <Stream.h>
+	#include <HardwareSerial.h>
 	#include <SPI.h>
 #endif
 
@@ -824,8 +824,8 @@ typedef TMC5160Stepper TMC5161Stepper;
 
 class TMC2208Stepper : public TMCStepper {
 	public:
-	    TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr, TMCStepper_n::PinDef mul_pin1, TMCStepper_n::PinDef mul_pin2);
-		TMC2208Stepper(Stream * SerialPort, float RS) :
+	    TMC2208Stepper(HardwareSerial * SerialPort, float RS, uint8_t addr, TMCStepper_n::PinDef mul_pin1, TMCStepper_n::PinDef mul_pin2);
+		TMC2208Stepper(HardwareSerial * SerialPort, float RS) :
 			TMC2208Stepper(SerialPort, RS, TMC2208_SLAVE_ADDR)
 			{}
 		#if SW_CAPABLE_PLATFORM
@@ -998,12 +998,12 @@ class TMC2208Stepper : public TMCStepper {
 		struct OTP_PROG_t 	{ constexpr static uint8_t address = 0x04; };
 		struct OTP_READ_t 	{ constexpr static uint8_t address = 0x05; };
 
-		TMC2208Stepper(Stream * SerialPort, float RS, uint8_t addr);
+		TMC2208Stepper(HardwareSerial * SerialPort, float RS, uint8_t addr);
 		#if SW_CAPABLE_PLATFORM
 			TMC2208Stepper(TMCStepper_n::PinDef SW_RX_pin, TMCStepper_n::PinDef SW_TX_pin, float RS, uint8_t addr);
 		#endif
 
-		Stream * HWSerial = nullptr;
+		HardwareSerial * HWSerial = nullptr;
 		#if SW_CAPABLE_PLATFORM
 			SoftwareSerial * SWSerial = nullptr;
 			const TMCStepper_n::PinDef RXTX_pin = 0; // Half duplex
@@ -1031,7 +1031,7 @@ class TMC2208Stepper : public TMCStepper {
 
 class TMC2209Stepper : public TMC2208Stepper {
 	public:
-		TMC2209Stepper(Stream * SerialPort, float RS, uint8_t addr) :
+		TMC2209Stepper(HardwareSerial * SerialPort, float RS, uint8_t addr) :
 			TMC2208Stepper(SerialPort, RS, addr) {}
 
 		#if SW_CAPABLE_PLATFORM
