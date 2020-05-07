@@ -49,5 +49,5 @@ void runMotor() {
 	shaft = !shaft;
 	driver.shaft(shaft);
 
-	//step ? step = HIGH : step = LOW;
+	step.toggle();
 }

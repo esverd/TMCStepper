@@ -275,6 +275,11 @@ namespace TMCStepper_n {
 			void write(const bool state) const {
 				HAL_GPIO_WritePin(pin.port, pin.pin, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
 			}
+
+			void toggle() const {
+				HAL_GPIO_TogglePin(pin.port, pin.pin);
+			}
+
 		#else
 			void mode(const uint8_t mode) const {
 				switch(mode) {
@@ -297,6 +302,10 @@ namespace TMCStepper_n {
 					LL_GPIO_SetOutputPin(pin.port, pin.pin);
 				else
 					LL_GPIO_ResetOutputPin(pin.port, pin.pin);
+			}
+
+			void toggle() const {
+				LL_GPIO_TogglePin(pin.port, pin.pin);
 			}
 
 		#endif
