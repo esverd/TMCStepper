@@ -232,22 +232,11 @@ namespace TMCStepper_n {
 	typedef TMCPin InputPin;
 
 #elif defined(USE_FULL_LL_DRIVER) || defined(USE_HAL_DRIVER)
+
 	#include "main.h"
 
-	struct PinDef {
-		PinDef(GPIO_TypeDef* const _port, uint32_t const _pin) : port(_port), pin(_pin) {}
-
-		bool operator ==(const PinDef &p2) {
-			return (p2.port == this->port) && (p2.pin == this->pin);
-		}
-
-		GPIO_TypeDef* const port = nullptr;
-		uint32_t const pin;
-	};
-
-	class TMCPin {
-	public:
-		TMCPin(const PinDef &p) : pin(p) {}
+	struct TMCPin {
+		TMCPin(GPIO_TypeDef* const _port, uint32_t const _pin) : port(_port), pin(_pin) {}
 
 		#if defined(HAL_GPIO_MODULE_ENABLED)
 			void mode(const uint8_t mode) const {
@@ -263,66 +252,93 @@ namespace TMCStepper_n {
 					default: break;
 				}
 
-				GPIO_InitStruct.Pin = pin.pin;
+				GPIO_InitStruct.Pin = pin;
 				GPIO_InitStruct.Pull = GPIO_NOPULL;
-				HAL_GPIO_Init(pin.port, &GPIO_InitStruct);
+				HAL_GPIO_Init(port, &GPIO_InitStruct);
 			}
-
-			bool read() const {
-				return HAL_GPIO_ReadPin(pin.port, pin.pin);
-			}
-
-			void write(const bool state) const {
-				HAL_GPIO_WritePin(pin.port, pin.pin, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
-			}
-
-			void toggle() const {
-				HAL_GPIO_TogglePin(pin.port, pin.pin);
-			}
-
 		#else
 			void mode(const uint8_t mode) const {
 				switch(mode) {
 					case OUTPUT:
-						LL_GPIO_SetPinMode(pin.port, pin.pin, LL_GPIO_MODE_OUTPUT);
+						LL_GPIO_SetPinMode(port, pin, LL_GPIO_MODE_OUTPUT);
 						break;
 					case INPUT:
-						LL_GPIO_SetPinMode(pin.port, pin.pin, LL_GPIO_MODE_INPUT);
+						LL_GPIO_SetPinMode(port, pin, LL_GPIO_MODE_INPUT);
 						break;
 					default: break;
 				}
 			}
+		#endif
 
+		bool operator ==(const TMCPin &p2) {
+			return (p2.port == port) && (p2.pin == pin);
+		}
+
+		GPIO_TypeDef* const port = nullptr;
+		uint32_t const pin;
+	};
+
+	class InputPin : public TMCPin {
+	public:
+		InputPin(const TMCPin &_pin) : TMCPin(_pin.port, _pin.pin) {}
+		InputPin(GPIO_TypeDef* const _port, uint32_t const _pin) : TMCPin(_port, _pin) {}
+
+		#if defined(HAL_GPIO_MODULE_ENABLED)
 			bool read() const {
-				return LL_GPIO_ReadInputPort(pin.port) & pin.pin;
+				return HAL_GPIO_ReadPin(port, pin);
 			}
-
-			void write(const bool state) const {
-				if (state)
-					LL_GPIO_SetOutputPin(pin.port, pin.pin);
-				else
-					LL_GPIO_ResetOutputPin(pin.port, pin.pin);
+		#else
+			bool read() const {
+				return LL_GPIO_ReadInputPort(port) & pin;
 			}
-
-			void toggle() const {
-				LL_GPIO_TogglePin(pin.port, pin.pin);
-			}
-
 		#endif
 
 		operator bool() const {
 			return read();
 		}
+	};
+
+	class OutputPin : public TMCPin {
+	public:
+		OutputPin(const TMCPin &_pin) : TMCPin(_pin.port, _pin.pin) {}
+		OutputPin(GPIO_TypeDef* const _port, uint32_t const _pin) : TMCPin(_port, _pin) {}
+
+		#if defined(HAL_GPIO_MODULE_ENABLED)
+			bool read() const {
+				return port->ODR & pin;
+			}
+
+			void write(const bool state) const {
+				HAL_GPIO_WritePin(port, pin, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+			}
+
+			void toggle() const {
+				HAL_GPIO_TogglePin(port, pin);
+			}
+		#else
+			bool read() const {
+				return LL_GPIO_ReadOutputPort(port) & pin;
+			}
+
+			void write(const bool state) const {
+				if (state)
+					LL_GPIO_SetOutputPin(port, pin);
+				else
+					LL_GPIO_ResetOutputPin(port, pin);
+			}
+
+			void toggle() const {
+				LL_GPIO_TogglePin(port, pin);
+			}
+		#endif
+
 		void operator =(bool state) {
 			write(state);
 		}
-
-	private:
-		const PinDef &pin;
 	};
 
-	typedef TMCPin OutputPin;
-	typedef TMCPin InputPin;
+	typedef TMCPin PinDef;
+
 #endif
 
 }
