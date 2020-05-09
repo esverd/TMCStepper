@@ -3,7 +3,7 @@
 
 using namespace TMCStepper_n;
 
-TMC2160Stepper::TMC2160Stepper(HW_SPI_TYPE &spi, PinDef pinCS, float RS, int8_t link) :
+TMC2160Stepper::TMC2160Stepper(SPIClass &spi, PinDef pinCS, float RS, int8_t link) :
   TMC2130Stepper(spi, pinCS, RS, link)
   { defaults(); }
 TMC2160Stepper::TMC2160Stepper(SW_SPIClass &spi, PinDef pinCS, float RS, int8_t link) :

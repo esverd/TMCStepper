@@ -26,8 +26,6 @@
 			static constexpr uint32_t timeout = 1000;
 		};
 
-		typedef SPIClass HW_SPI_TYPE;
-
 		inline void delay(uint32_t ms) {
 			HAL_Delay(ms);
 		}
@@ -57,8 +55,6 @@
 		private:
 			SPI_TypeDef * const hspi;
 		};
-
-		typedef SPIClass HW_SPI_TYPE;
 
 		inline void delay(uint32_t ms) {
 			LL_mDelay(ms);
@@ -107,11 +103,8 @@
 		};
 	#endif
 
-#elif defined(ARDUINO_ARCH_AVR)
+#elif defined(ARDUINO)
 	#include <SPI.h>
-	typedef SPIClass HW_SPI_TYPE;
-#else
-	typedef SPIClass HW_SPI_TYPE;
 #endif
 
 #ifndef HIGH

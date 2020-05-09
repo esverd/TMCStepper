@@ -6,7 +6,7 @@ using namespace TMCStepper_n;
 int8_t TMC2130Stepper::chain_length = 0;
 uint32_t TMC2130Stepper::spi_speed = 16000000/8;
 
-TMC2130Stepper::TMC2130Stepper(HW_SPI_TYPE &spi, PinDef cs, float RS, int8_t link) :
+TMC2130Stepper::TMC2130Stepper(SPIClass &spi, PinDef cs, float RS, int8_t link) :
   TMCStepper(RS),
   pinCS(cs),
   TMC_HW_SPI(&spi),

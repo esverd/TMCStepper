@@ -3,7 +3,7 @@
 
 using namespace TMCStepper_n;
 
-TMC2660Stepper::TMC2660Stepper(HW_SPI_TYPE &spi, PinDef cs, float RS) :
+TMC2660Stepper::TMC2660Stepper(SPIClass &spi, PinDef cs, float RS) :
   pinCS(cs),
   Rsense(RS),
   TMC_HW_SPI(&spi)

@@ -142,7 +142,7 @@ class TMCStepper {
 
 class TMC2130Stepper : public TMCStepper {
 	public:
-		TMC2130Stepper(HW_SPI_TYPE &spi, TMCStepper_n::PinDef cs, float RS, int8_t link_index = -1);
+		TMC2130Stepper(SPIClass &spi, TMCStepper_n::PinDef cs, float RS, int8_t link_index = -1);
 		TMC2130Stepper(SW_SPIClass &spi, TMCStepper_n::PinDef cs, float RS, int8_t link_index = -1);
 
 		void begin();
@@ -369,7 +369,7 @@ class TMC2130Stepper : public TMCStepper {
 
 		static uint32_t spi_speed; // Default 2MHz
 		const TMCStepper_n::PinDef pinCS;
-		HW_SPI_TYPE *TMC_HW_SPI = nullptr;
+		SPIClass *TMC_HW_SPI = nullptr;
 		SW_SPIClass *TMC_SW_SPI = nullptr;
 
 		int8_t link_index;
@@ -378,7 +378,7 @@ class TMC2130Stepper : public TMCStepper {
 
 class TMC2160Stepper : public TMC2130Stepper {
 	public:
-		TMC2160Stepper(HW_SPI_TYPE &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
+		TMC2160Stepper(SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
 		TMC2160Stepper(SW_SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
 		void begin();
 		void defaults();
@@ -480,7 +480,7 @@ class TMC2160Stepper : public TMC2130Stepper {
 
 class TMC5130Stepper : public TMC2160Stepper {
 	public:
-		TMC5130Stepper(HW_SPI_TYPE &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
+		TMC5130Stepper(SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
 		TMC5130Stepper(SW_SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
 
 		void begin();
@@ -726,7 +726,7 @@ class TMC5130Stepper : public TMC2160Stepper {
 
 class TMC5160Stepper : public TMC5130Stepper {
 	public:
-		TMC5160Stepper(HW_SPI_TYPE &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
+		TMC5160Stepper(SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
 		TMC5160Stepper(SW_SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS, int8_t link_index = -1);
 
 		void rms_current(uint16_t mA) { TMC2160Stepper::rms_current(mA); }
@@ -1101,7 +1101,7 @@ class TMC2224Stepper : public TMC2208Stepper {
 
 class TMC2660Stepper {
 	public:
-		TMC2660Stepper(HW_SPI_TYPE &spi, TMCStepper_n::PinDef pinCS, float RS);
+		TMC2660Stepper(SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS);
 		TMC2660Stepper(SW_SPIClass &spi, TMCStepper_n::PinDef pinCS, float RS);
 		void write(uint8_t addressByte, uint32_t config);
 		uint32_t read();
@@ -1260,6 +1260,6 @@ class TMC2660Stepper {
 		float holdMultiplier = 0.5;
 		uint32_t spi_speed = 16000000/8; // Default 2MHz
 		uint8_t _savedToff = 0;
-		HW_SPI_TYPE *TMC_HW_SPI = nullptr;
+		SPIClass *TMC_HW_SPI = nullptr;
 		SW_SPIClass *TMC_SW_SPI = nullptr;
 };
