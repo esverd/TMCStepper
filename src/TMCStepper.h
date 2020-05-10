@@ -13,13 +13,17 @@
 #include <Stream.h>
 #include <SPI.h>
 
-#if (__cplusplus == 201703L) && defined(__has_include)
-	#define SW_CAPABLE_PLATFORM __has_include(<SoftwareSerial.h>)
-#elif defined(__AVR__) || defined(TARGET_LPC1768) || defined(ARDUINO_ARCH_STM32)
-	#define SW_CAPABLE_PLATFORM true
-#else
-	#define SW_CAPABLE_PLATFORM false
-#endif
+//SoftwareSerial has been causing some bugs when I use this library with my plottrbot
+//all features of SoftwareSerial has been removed/ignored in my fork of the TMCStepper library
+//commented out because SW_CAPABLE_PLATFORM is going to be defined false a few lines down
+// #if (__cplusplus == 201703L) && defined(__has_include)
+// 	#define SW_CAPABLE_PLATFORM __has_include(<SoftwareSerial.h>)
+// #elif defined(__AVR__) || defined(TARGET_LPC1768) || defined(ARDUINO_ARCH_STM32)
+// 	#define SW_CAPABLE_PLATFORM true
+// #else
+// 	#define SW_CAPABLE_PLATFORM false
+// #endif
+#define SW_CAPABLE_PLATFORM false		//defined false to ignore everything regarding SoftwareSerial
 
 #if SW_CAPABLE_PLATFORM
 	#include <SoftwareSerial.h>
